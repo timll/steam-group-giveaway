@@ -1,0 +1,186 @@
+<html>
+    <head>
+        <?php
+        include"steam.php";
+        ?>
+
+        <title>steam group giveaway</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="initial-scale=1" />
+
+        <style>
+            @import url(http://fonts.googleapis.com/css?family=Roboto:300);
+
+            body {
+                background-color: #282B2D;
+                margin: 0;
+                padding: 0;
+                font-family: 'Roboto';
+                font-weight: 300;
+            }
+            #wrapper {
+                margin: 50px auto;
+                max-width: 400px;
+                background-color: #e74c3c;
+                padding: 10px;
+            }
+            #wrapper input {
+                height: 50px;
+                color: #e74c3c;
+                font-size: 16pt;
+                width: 100%;
+                font-family: 'Roboto';
+                font-weight: 300;
+                text-align: center;
+            }
+            #wrapper .button {
+                margin-top: 10px;
+                height: 50px;
+                width: 100%;
+                color: white;
+                background-color: #3bd27b;
+                border: none;
+                font-family: 'Roboto';
+                font-weight: 300;
+                font-size: 14pt;
+            }
+            #wrapper .button:hover {
+                background-color: #27ae60;
+                color: white;
+                transition: 0.3s background-color, color;
+            }
+            #wrapper .button:focus {
+                outline: 0;
+            }
+            #wrapper #waiter {
+                height: 50px;
+                display: none;
+                width: 100%;
+                vertical-align: middle;
+                line-height: 50px;
+                font-family: 'Roboto';
+                font-weight: 300;
+                font-size: 14pt;
+                color: white;
+                text-align: center;
+                margin-top: 10px;
+            }
+            #winner {
+                margin-top: 30px;
+            }
+            #wrapper #winner #winnerpic{
+                float: left;
+                width: 100px;
+                padding-right: 10px;
+            }
+            #wrapper #winner #info #winnername {
+                padding: 0;
+                margin: 0;
+                float: left;
+                font-family: 'Roboto';
+                font-weight: 300;
+                height: 39px;
+                color: white;
+                width: calc(100% - 110px);
+                font-size: 24pt;
+                text-align: center;
+            }
+            #wrapper #winner #info button {
+                margin-top: 11px;
+                border: 0;
+                height: 50px;
+                width: calc(100% - 110px);
+                color: white;
+                background-color: #3bd27b;
+                border: none;
+                font-family: 'Roboto';
+                font-weight: 300;
+                font-size: 14pt;
+            }
+            #wrapper #winner #info button:hover {
+                background-color: #27ae60;
+                color: white;
+                transition: 0.3s background-color, color;
+            }
+            #wrapper #winner #info button:focus {
+                outline: none;
+            }
+            #wrapper a {
+                float: right;
+                margin-top: 20px;
+                display: block;
+                height: 25px;
+                font-family: 'Roboto';
+                font-weight: 300;
+                color: white;
+                text-decoration: none;
+            }
+            #wrapper a:hover {
+                text-decoration: underline;
+            }
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    </head>
+
+    <body>
+        <div id="wrapper">
+            <input id="groupLink"  type="text" placeholder="Group Link" maxlength="32"/>
+            <button class="button" type="submit" id="subB" onclick="selectWinner()">Give me a winner!</button>
+            <div id="waiter">This may take some seconds...</div>
+
+            <div id="winner">
+                <img id="winnerpic" src="http://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg" alt="Profile picture"/>
+
+                <div id="info">
+                    <h1 id="winnername">Name</h1>
+                    <button type="add" onclick="openWinner()">Open profile</button>
+                </div>
+                <a href="http://steamcommunity.com/id/timll" target="_blank">made by Tim</a>
+            </div>
+        </div>
+
+        <script>
+            $steamid = "";
+
+            function selectWinner() {
+                if($('#groupLink').val().includes("http") || $('#groupLink').val().includes("steamcommunity") || $('#groupLink').val() == "") {
+                    alert("I need the group link (not url!). It's the last part of the group url.");
+                    return;
+                }
+
+                $('#subB').hide();
+                $('#waiter').show();
+                $.ajax(
+                        {
+                            url: "steam.php?group=" + $('#groupLink').val(),
+                            success: function(result) {
+                                afterAjax(result);
+                            },
+                            error: function() {
+                                $('#waiter').hide();
+                                $('#subB').show();
+                            }
+                        }
+                );
+            }
+
+            function afterAjax($res) {
+                $('#waiter').hide();
+                $('#subB').show();
+                if($res == "" || !$res.includes("EG9hLoUjP4xj")) {
+                    alert($res);
+                    return;
+                }
+                $res = $res.split("TarU1LJqoNIR");
+                $steamid = $res[0];
+                $res = $res[1].split("EG9hLoUjP4xj");
+                $('#winnername').text($res[0].substr(0, 15));
+                $('#winnerpic').attr("src", $res[1]);
+            }
+
+            function openWinner() {
+                window.open("https://steamcommunity.com/profiles/" + $steamid, "_self");
+            }
+        </script>
+    </body>
+</html>
