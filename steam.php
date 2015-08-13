@@ -12,7 +12,7 @@ for($i = 0; $i < $xml->memberCount; $i++) {
 
 $winner = $members[rand(0, $xml->memberCount-1)];
 
-$url = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=F71721765741C3262E75515B76955F21&steamids=". $winner ."&format=xml";
+$url = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=XXXXXXXX&steamids=". $winner ."&format=xml";
 $xml = simplexml_load_file($url);
 
 
